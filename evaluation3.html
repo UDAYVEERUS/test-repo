@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body{
+            background-color: pink;
+        }
+        body > div > h1{
+            text-align: center;
+            color: blue;
+            text-decoration: underline;
+            font-size: 40px;
+        }
+
+        #formContainer {
+            display: flex;
+            flex-direction: column;
+            margin: auto;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+            width: 300px;
+            row-gap: 10px;
+            background-color: pink;
+        }
+        #formContainer input ,select {
+            padding:5px;
+        }
+        .card{
+            height: auto;
+            border: 1px solid green;
+        }
+        #statementContainer{
+            display: grid;
+            grid-template-columns: repeat(4,1fr);
+            gap: 20px;
+            margin-top: 30px;
+        }
+    </style>
+</head>
+<body>
+    <div>
+        <h1>Expence Tracker Geeta Devi</h1>
+        
+        <form id="formContainer">
+                <label>Select Month</label>
+                <select id="month">
+                <option value="January">January</option>
+                <option value="February">February</option>
+                <option value="March">March</option>
+                <option value="April">April</option>
+                <option value="May">May</option>
+                <option value="June">June</option>
+                <option value="July">July</option>
+                <option value="August">August</option>
+                <option value="September">September</option>
+                <option value="October">October</option>
+                <option value="Noverber">Noverber</option>
+                <option value="December">December</option>
+            </select>
+            <label>Income</label>
+            <input type="number" id="income"/>
+            <label>Expence</label>
+            <input type="number" id="expence"/>
+            <input type="submit"/>
+        </form>
+        <div id="statementContainer">
+
+        </div>
+    </div>
+    <script>
+        var statementArr = JSON.parse(localStorage.getItem('statements')) || []
+        function getPrevStatement (){
+            statementArr.forEach(function(statement){
+                createCard(statement.month , statement.income , statement.expence , statement.saving)
+            })
+        }
+        getPrevStatement()
+
+        var form = document.querySelector('#formContainer')
+        form.addEventListener('submit',addStatement)
+        function addStatement(){
+            event.preventDefault()
+            var month = document.querySelector('#month').value
+            var income = document.querySelector('#income').value
+            var expence = document.querySelector('#expence').value
+            var saving = eval(income - expence)
+
+            statementArr.push({
+                month: month,
+                income: income,
+                expence: expence,
+                saving: saving
+            })
+            localStorage.setItem("statements",JSON.stringify(statementArr))
+            createCard(month, income ,expence ,saving)
+        }
+
+        function createCard(month , income , expence , saving){
+            var card = document.createElement('div')
+            card.setAttribute('class','card')
+
+            var monthName = document.createElement('h4')
+            monthName.innerText = "Month:" + month
+
+            var incomeText = document.createElement('p')
+            incomeText.innerText = "Income:" + income
+
+            var expenceText = document.createElement('p')
+            expenceText.innerText = "Expence:" + expence
+
+            var savingText = document.createElement('p')
+            savingText.innerText = "Saving:" + saving
+
+            card.append(monthName , incomeText, expenceText , savingText)
+            var statementContainer = document.querySelector('#statementContainer')
+            statementContainer.append(card)
+        }
+
+    </script>
+</body>
+</html>
